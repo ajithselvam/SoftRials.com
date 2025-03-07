@@ -56,12 +56,22 @@
      </ul>
     </nav>
     <div class="flex items-center space-x-4">
-     <button class="p-2 bg-blue-500 text-white rounded transition duration-300 ease-in-out hover:bg-blue-600">
-      Login
-     </button>
-     <button class="p-2 bg-green-500 text-white rounded transition duration-300 ease-in-out hover:bg-green-600">
-      Signup
-     </button>
+     
+
+
+        <button id="loginBtn"
+        class="p-2 bg-blue-500 text-white rounded transition duration-300 ease-in-out hover:bg-blue-600">
+        Login
+    </button>    
+
+
+    <button id="signupBtn"
+                    class="p-2 bg-green-500 text-white rounded transition duration-300 ease-in-out hover:bg-green-600">
+                    Signup
+                </button>
+
+
+     
     </div>
    </div>
   </header>
@@ -350,6 +360,118 @@
     </section>
    </main>
   </div>
+
+
+
+
+
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96">
+        <h2 id="modalTitle" class="text-2xl font-bold mb-4">Login</h2>
+        <form id="authForm">
+            <div id="nameField" class="mb-4 hidden">
+                <label class="block mb-2">Name:</label>
+                <input type="text" id="name" class="w-full p-2 border rounded" />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-2">Email:</label>
+                <input type="email" id="email" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-2">Password:</label>
+                <input type="password" id="password" class="w-full p-2 border rounded" required />
+            </div>
+            <button type="submit"
+                class="bg-green-500 text-white w-full p-2 rounded hover:bg-green-600 transition duration-300">Submit</button>
+            <button id="closeModal"
+                class="mt-2 bg-red-500 text-white w-full p-2 rounded hover:bg-red-600 transition duration-300">Close</button>
+            <p id="message" class="text-red-500 mt-2"></p>
+        </form>
+    </div>
+</div>
+
+<script>
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const nameField = document.getElementById('nameField');
+    const authForm = document.getElementById('authForm');
+    const closeModal = document.getElementById('closeModal');
+    const message = document.getElementById('message');
+
+    let isLogin = true;
+
+    loginBtn.addEventListener('click', () => {
+        isLogin = true;
+        modalTitle.textContent = 'Login';
+        nameField.classList.add('hidden');
+        modal.style.display = 'flex';
+        message.textContent = '';
+    });
+
+    signupBtn.addEventListener('click', () => {
+        isLogin = false;
+        modalTitle.textContent = 'Signup';
+        nameField.classList.remove('hidden');
+        modal.style.display = 'flex';
+        message.textContent = '';
+    });
+
+    closeModal.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.style.display = 'none';
+        authForm.reset();
+    });
+
+    authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (isLogin) {
+            // Login process
+            const user = JSON.parse(localStorage.getItem(email));
+            if (user && user.password === password) {
+                message.textContent = 'Login successful!';
+                message.classList.remove('text-red-500');
+                message.classList.add('text-green-500');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    authForm.reset();
+                }, 1500);
+            } else {
+                message.textContent = 'Invalid email or password!';
+            }
+        } else {
+            // Signup process
+            if (localStorage.getItem(email)) {
+                message.textContent = 'User already exists!';
+            } else {
+                const user = { name, email, password };
+                localStorage.setItem(email, JSON.stringify(user));
+                message.textContent = 'Signup successful!';
+                message.classList.remove('text-red-500');
+                message.classList.add('text-green-500');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    authForm.reset();
+                }, 1500);
+            }
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
   <footer class="bg-gray-800 text-white py-8">
    <div class="container mx-auto text-center">
     <p>
@@ -368,4 +490,11 @@
       </i>
      </a>
      <a class="hover:text-gray-400" href="#">
-      <i class="fab fa-instagram
+      <i class="fab fa-instagram">
+      </i>
+     </a>
+     </div>
+     </div>
+     </footer>
+ </body>
+</html>
